@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 git_source(:github) { |repo_name| "https://github.com/#{repo_name}" }
 
-gem "que", "1.0.0.beta3", github: "que-rb/que", ref: "53106609b24d7e8bc231ae3883f69dca8c989d9d"
+gem "que"
 
 # Specify your gem's dependencies in que-locks.gemspec
 gemspec
