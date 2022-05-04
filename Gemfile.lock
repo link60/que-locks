@@ -3,7 +3,7 @@ PATH
   specs:
     que-locks (0.2.0)
       neatjson
-      que
+      que (>= 1.4.0)
       xxhash
 
 GEM
@@ -70,7 +70,7 @@ DEPENDENCIES
   database_cleaner
   minitest
   pg
-  que
+  que (>= 1.4.0)
   que-locks!
   rake (~> 10.0)
   rubocop
