@@ -1,9 +1,15 @@
 require "minitest/autorun"
+require "mocha/minitest"
+require "rails/railtie"
+require "active_record"
+require "active_job" # this must come before que for its monkeypatch
 require "que"
 require "que/locks"
 require "byebug"
-require "active_record"
 require "database_cleaner"
+
+# Run railtie initializers so we get our activejob extensions
+Que::Locks::Railtie.initializers.each(&:run)
 
 # use docker-compose'd postgres by default
 ActiveRecord::Base.establish_connection(ENV.fetch("DATABASE_URL", "postgres://que_locks@localhost/que_locks_test"))
@@ -11,8 +17,11 @@ ActiveRecord::Base.establish_connection(ENV.fetch("DATABASE_URL", "postgres://qu
 Que.connection = ActiveRecord
 Que::Migrations.migrate!(version: Que::Migrations::CURRENT_VERSION)
 
-Que.logger = Logger.new(STDOUT)
-Que.internal_logger = Logger.new(STDOUT)
+logger = Logger.new(STDOUT, level: Logger::WARN)
+Que.logger = logger
+Que.internal_logger = logger
+ActiveJob::Base.logger = logger
+ActiveJob::Base.queue_adapter = :que
 DatabaseCleaner.strategy = :truncation
 
 class Minitest::Test
@@ -50,7 +59,7 @@ class Minitest::Test
   end
 
   def run_jobs
-    job_buffer = Que::JobBuffer.new(maximum_size: 20, minimum_size: 0, priorities: [10, 30, 50, nil])
+    job_buffer = Que::JobBuffer.new(maximum_size: 20, priorities: [10, 30, 50, nil])
     result_queue = Que::ResultQueue.new
 
     jobs = ActiveRecord::Base.connection.execute("SELECT * FROM que_jobs;").to_a.map do |job|

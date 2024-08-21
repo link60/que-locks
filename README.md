@@ -1,4 +1,4 @@
-# Que::Locks ![Ruby](https://github.com/airhorns/que-locks/workflows/Ruby/badge.svg)
+# Que::Locks ![Ruby](https://github.com/que-locks/que-locks/workflows/Ruby/badge.svg)
 
 `que-locks` adds an opt-in exclusive execution lock to [Que](https://github.com/que-rb/que), a robust and simple Postgres based background job library. Jobs can specify that exactly one instance of a job should be executing at once and `que-locks` will prevent the enqueuing and execution of any other instance of the same job with the same arguments. This is useful for jobs that are doing something important that should only ever happen one at a time, like processing a payment for a given user, or super expensive jobs that could cause thundering herd problems if enqueued all at the same time.
 
@@ -26,8 +26,6 @@ Or install it yourself as:
 $ gem install que-locks
 ```
 
-**Note**: `que-locks` is built for Que 1.0, which is at this time not the default version of que you'll get if you don't specify a prerelease que version like `1.0.0.beta3` in your application's Gemfile.
-
 ## Usage
 
 After requiring the gem, set the `exclusive_execution_lock` property on your job class:
@@ -42,11 +40,21 @@ class SomeJob < Que::Job
 end
 ```
 
-That's it!
+If you're using Rails, the `ActiveJob` API is enhanced the same way: set the `exclusive_execution_lock` property on your `ActiveJob::Base` subclass:
+
+```ruby
+class SomeJob < ActiveJob::Base
+  self.exclusive_execution_lock = true
+
+  def perform(user_id:, bar:)
+    # useful stuff
+  end
+end
+```
 
 ## Configuration (Important!)
 
-Right now, `que-locks` does __not__ support Que running with a `--worker-count` greater than 1! This is because the locking strategy is not compatible with the way Que uses it's connection pool. This is a big limitation we hope to remove, but please note that you must run Que with one worker per process when using `que-locks`. 
+Right now, `que-locks` does __not__ support Que running with a `--worker-count` greater than 1! This is because the locking strategy is not compatible with the way Que uses its connection pool. This is a big limitation we hope to remove, but please note that you must run Que with one worker per process when using `que-locks`.
 
 ### Checking lock status
 
@@ -100,7 +108,6 @@ It can be tricky to puzzle out if you have a job locking or a job concurrency li
 - Configurable preemptive lock checking at enqueue time
 - Selective argument comparison for lock key computation
 - maybe a `que-web` integration to expose lock info
-- ActiveJob integration for Rails users. It'd be nice for those who prefer the ActiveJob::Job API to use `que-locks` for nice transactional locking semantics, but this doesn't exist yet. In the meantime, we suggest using `Que::Job` directly.
 
 If you wish for any of this stuff, feel free to open a PR, contributions are always welcome!!
 
@@ -116,7 +123,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/airhorns/que-locks. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Bug reports and pull requests are welcome on GitHub at https://github.com/que-locks/que-locks. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
 
 ## License
 

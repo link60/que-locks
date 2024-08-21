@@ -9,7 +9,7 @@ Gem::Specification.new do |spec|
   spec.email = ["harry.brundage@gmail.com"]
 
   spec.summary = %q{Job locking for que jobs such that only one can be in the queue or executing at once.}
-  spec.homepage = "https://github.com/superpro-inc/que-locks"
+  spec.homepage = "https://github.com/que-locks/que-locks"
   spec.license = "MIT"
 
   # Specify which files should be added to the gem when it is released.
@@ -21,7 +21,7 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_development_dependency "bundler"
+  spec.add_development_dependency "bundler", '~> 2.0'
   spec.add_development_dependency "rake", "~> 10.0"
 
   spec.add_dependency "neatjson"
