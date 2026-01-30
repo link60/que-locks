@@ -118,7 +118,7 @@ PLATFORMS
 DEPENDENCIES
   activejob
   activerecord
-  bundler (~> 2.0)
+  bundler
   byebug
   database_cleaner
   minitest
@@ -126,10 +126,11 @@ DEPENDENCIES
   pg
   que-locks!
   railties
-  rake (~> 10.0)
+  rake
   rubocop
   rubocop-performance
   rufo
+  xxhash
 
 BUNDLED WITH
    2.4.22

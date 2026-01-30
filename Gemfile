@@ -19,4 +19,6 @@ group :development do
   gem "rufo"
   gem "rubocop"
   gem "rubocop-performance"
+
+  gem "xxhash"
 end
